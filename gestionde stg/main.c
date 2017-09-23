@@ -1,0 +1,1048 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <conio.h>
+
+void MENU(void);
+void ajouter_stg(char* nom_groupe);
+void afficher_info();
+void affichier_stg(void);
+void pomper_stg(char* CIN,char* NOM,char* PRENOM,char* AGE,char* ADRESSE,char* TEL,char* TYPEBAC);
+int chercher_stg(char* str1, char* str2, char* str3, char* str4, int nbr);
+int type_recherche();
+void MENU_modifier();
+//void modifier_stg(char nom_groupe[20]);
+FILE* groupe;
+FILE* groupe_tmp;
+FILE* groupe_matiere;
+char nom_groupetmp[20] = "tmp";
+char test[20];
+int new=1;
+char cin[11];
+char cintmp[11];
+ //pour la suppression
+char nom[21];
+char nomtmp[21];
+
+char prenom[21];
+char prenomtmp[21];
+
+char tel[11];
+char teltmp[11];
+
+char age[3];
+char adresse[21];
+char typebac[21];
+int len;
+char ligne[102];
+int i;
+
+char cin2[11];
+char nom2[21];
+char prenom2[21];
+char tel2[11];
+char age2[3];
+char adresse2[21];
+char typebac2[21];
+
+char matiere[20];
+char ligne_matiere[200];
+int existe = 0;
+char reponse;
+int cmp;
+int cmp1, cmp2;
+long numero;
+long pos;
+int supprimer;
+
+
+int main(int argc, char* argv[])
+{ //----------------------------------------------------------------------------
+
+
+//Declaration des variable  utiliser en login
+
+    short login;
+    char username[15];
+    char password[15];
+    char c;
+    int i=0;
+    do{
+        i=0;
+        login = 1;
+/// password = admin usernam= admin . 
+        printf("\n\n\n\n\t\t\t__________   _______________");
+        printf("\n\t\t\t|username|   ");
+
+// fgets . pour eviter bufferoverflow
+        fgets(username,15,stdin);
+        username[5]='\0';
+        
+
+        printf("\n\n\t\t\t__________   _______________");
+        printf("\n\t\t\t|password|   ");
+   //     scanf("%s", password);
+   i=0;
+      while (1) {
+      if (i < 0) {
+         i = 0;
+      }
+      c = getch();
+ fflush(stdin);
+      if (c == 13) // ascii value of entrer 
+         break;
+      if (c == 8) /*ascii value of backspace . pour supprimer un car*/
+      {
+            if(i!=0){
+         putchar('\b'); //retour un car 
+         putchar(' ');  
+         putchar('\b'); 
+         i--;}
+         continue;
+      }
+
+      password[i++] = c;
+      c = '*';
+      putchar(c);
+   }
+
+   password[i] = '\0';
+
+        if ((strcmp(username, "admin") != 0) || (strcmp(password, "admin") != 0))
+        {
+            login = 0; // tu peux changer le les donne de login .
+            system("cls");
+            printf("\n\t\t\t Username or Password incorrect !! TRY AGAIN ");
+            
+        }
+    } while (login == 0);
+
+
+    system("cls");
+    system("COLOR F2");
+    printf("\n\n\n\n\t\t\t WELCOME  %s To I.S.T.A Lazaret\n\n\n\n\n press any key to continue\n\n", username);
+    getch();
+    system("COLOR 07");
+
+    system("cls");
+//declaration des variable local a main
+
+
+
+    char nom_groupe[20], nom_groupe2[20],nom_matiere[]="matiere";
+    int choix, existe, Question, result;
+    
+    groupe_matiere= fopen(nom_matiere,"a+"); // utiliser plus tard
+
+    debut:         //************************** goto .//point retour
+    puts("que voulez-vous faire");
+    printf("\n");
+
+    do
+    {       // boucle de choisir un groupe soit existe ou non
+        puts("tapez:");
+        puts("			1-cree nouveau goupe");
+        puts("			2-ouvrir ancien groupe");
+        puts("			3-fermer le programme");
+        fflush(stdin);
+        scanf("%d", &choix);
+
+        //choix
+        switch (choix)
+        {
+            /*cree nouveau goupe*/
+            case 1: //si l'utilisateur veux cree un nouveau groupe.
+                name:   //************************** goto
+                      printf("entrer le nom de groupe: \n\n"); // entrer le nom du groupe
+                fflush(stdin);
+                gets(nom_groupe);   //scanf("%s",nom_groupe);
+                
+                
+                
+                printf("\n");
+                // tester si le groupe est existe
+
+                if (groupe = fopen(nom_groupe, "r"))
+                {
+                    existe = 1;
+                    fclose(groupe);
+
+                }
+                else existe = 0;    //just added
+
+                // si le groupe est existe
+
+                if (existe)
+                {
+
+                    puts("groupe existe, risk d'ecrasement");
+                    do
+                    {
+                        puts("tapez:");
+                        puts("			1-supprime l'ancien groupe (remplacer par un nouveau groupe) ");
+                        puts("			2-entrer un nouveau nom de groupe");
+
+                        scanf("%d", &choix);
+                        fflush(stdin);
+                        if (choix == 1)
+                        {
+                            groupe = fopen(nom_groupe, "w");
+                            puts("le fichier groupe a ete creer avec succes");
+                            goto suivi;
+                        }
+                        else if (choix == 2)
+                        {
+                            //existe = 0;
+                            goto name;
+                        }
+
+                    } while ((choix != 1) && (choix != 2));
+                }
+
+
+                else
+                {   //si le groupe n'existe pas on le cree.
+                    groupe = fopen(nom_groupe, "w");
+                    puts("le fichier groupe a ate creer avec succes");
+                    
+                    suivi: //************************** goto
+                    system("COLOR 07");
+                    MENU();//affichage de menu 
+                    scanf("%d", &Question); 
+                         //choisir  dans le menu
+                         
+                         while (Question<1 || Question>11 ){
+                               printf("\n  erreur de choix !! entrer une choix valide !! \n");
+                             scanf("%d", &Question);  
+                               
+                               }
+                               
+                    fflush(stdin);
+
+                    switch (Question)
+                    {
+
+                        case 1:     /*Afficher stagiaire*/
+                            rewind(groupe);
+                            affichier_stg();
+                            //puts("appuyer sur une touche pour continuer...");getchar();
+                            putchar('\n');
+                            printf("appuyer sur un touche pur continuer ");
+                            getch();
+                            system("COLOR 07");
+                            goto suivi;
+
+                            break;
+
+                        case 2:     /*Ajouter stagiaire*/
+
+                            do
+                            {
+                                ajouter_stg(nom_groupe);
+
+                                // ajouter un autre stagiaire
+                                fflush(stdin);
+
+                            } while ((reponse == 'o' || reponse == 'O') && (reponse != 'n' && reponse != 'N'));
+
+
+
+                            break;
+
+                        case 3:  //chercher stagiaire
+
+                            existe = 0;
+                            fseek(groupe, 0L, 0);
+
+                            existe = type_recherche();
+
+                            if (existe == 1)
+                            {
+                                printf("\t\t\nle stagiaire  est trouver avec succes\n\n\n");
+                                afficher_info();
+                                printf("taper un touche pour continuer");
+                                getch();
+
+                            }
+
+                            if (existe == 0)
+                            {
+                                printf("\n\n\\n\n\n\n\n\n\n\n\n\n\t\t\ttle stagiaire n'esxiste pas\n\n\n");
+                            }
+                            goto suivi;
+                            break;
+
+                        case 4:    /*supprimer stagiaire*/
+
+                            do
+                            {
+                                existe = 0;
+                                fseek(groupe, 0L, 0);
+
+                                existe = type_recherche();
+
+                                if (existe == 1)
+                                {
+                                    printf("\t\t\t\n\ntle stagiaire  est trouver avec succes\n\n\n");
+                                    afficher_info();
+                                    fflush(stdin);
+                                    printf("appuyer sur un touche pur continuer ");
+                                    getch();
+                                    system("COLOR 7C");
+                                    fflush(stdin);
+                                    puts("\n\n\n\n\n\n\tetes-vous sur de vouloir supprimer le stagiaire definitivement ?!! O/n \n\n");
+                                    choix = getchar();
+
+
+                                    if (choix == 'O' || choix == 'o')
+                                    {
+
+                                        strcpy(cintmp, cin); //copier le cin de stagiaire qu'on va suppreimer dans un cin temporaire
+                                        rewind(groupe);
+                                        groupe_tmp = fopen(nom_groupetmp, "w");// ouvrir un nouveau fichier en mode creation
+
+                                        supprimer_stg();
+
+                                        fclose(groupe);
+                                        fclose(groupe_tmp);
+                                        remove(nom_groupe);
+                                        rename(nom_groupetmp, nom_groupe);
+                                        groupe = fopen(nom_groupe, "r+");
+                                        system("COLOR F2");
+                                        puts("------le stagiaire a ete supprime avec succes------");
+                                    } // choix
+
+                                }//existe
+
+                                else printf("\n\n Le stagiaire n'existe pas!!\n\n\n");
+
+
+                                do
+                                {
+                                    printf("\ntaper O/N o/n pour un autre stagiaire\n\n");
+                                    fflush(stdin);
+                                    reponse = getchar();
+
+                                } while (reponse != 'o' && reponse != 'O' && reponse != 'n' && reponse != 'N');// si erreur de choix, autre stagiaire
+
+
+                            } while (reponse == 'o' || reponse == 'O'); //autre stagiaire
+
+                            goto suivi;
+                            break;
+
+                        case 5:  /*modifier stagiaire*/
+
+                            printf("chercher le stagiaire pour le modifier\n"); fflush(stdin);
+                            type_recherche(); fflush(stdin);
+                            afficher_info();
+                            getchar();
+                            fflush(stdin);
+                            MENU_modifier();
+                            scanf("%d", &Question);
+                            fflush(stdin);
+
+                            switch (Question)
+                            {
+                                /////////////////////////////////////////////////////////////////////////////////////////////////////
+                                case 1:
+
+                                    fseek(groupe, -114L, 1);
+                                    //pos=ftell(groupe);
+                                    // printf("%d",pos);
+                                    fflush(stdin);
+                                    printf("entrer nouveau cin");
+                                    fgets(cin2, 12, stdin);
+                                    fflush(stdin);
+                                    len = strlen(cin2) - 1;
+                                    cin2[len] = '\0';
+
+                                    strcpy(cin, cin2);
+
+                                    fprintf(groupe, "%-10s\n", cin);
+
+                                    fclose(groupe);
+                                    break;
+                                case 2:
+                                    fseek(groupe, -102L, 1);
+                                    //pos=ftell(groupe);
+                                    // printf("%d",pos);
+                                    fflush(stdin);
+                                    printf("entrer nouveau nom");
+                                    fgets(nom2, 22, stdin);
+
+                                    len = strlen(nom2) - 1;
+                                    nom2[len] = '\0';
+
+                                    strcpy(nom, nom2);
+
+                                    fprintf(groupe, "%-20s\n", nom);
+
+                                    fclose(groupe);
+                                    break;
+                                case 3:
+                                    fseek(groupe, -82L, 1);
+
+
+                                    fflush(stdin);
+                                    printf("entrer nouveau PRENOM: \n");
+                                    fgets(prenom2, 22, stdin);
+                                    fflush(stdin);
+                                    len = strlen(prenom2) - 1;
+                                    prenom2[len] = '\0';
+
+                                    strcpy(prenom, prenom2);
+                                    fprintf(groupe, "\n");
+
+                                    fprintf(groupe, "%-20s\n", prenom);
+
+                                    fclose(groupe);
+                                    break;
+
+                                case 4:
+                                    fseek(groupe, -60, 1);
+
+
+                                    fflush(stdin);
+                                    printf("entrer nouveau AGE: \n");
+                                    fgets(age2, 4, stdin);
+                                    fflush(stdin);
+                                    len = strlen(age2) - 1;
+                                    age2[len] = '\0';
+
+                                    strcpy(age, age2);
+                                    fprintf(groupe, "\n");
+
+                                    fprintf(groupe, "%-2s\n", age);
+
+                                    fclose(groupe);
+
+                                    break;
+
+                                case 5:
+
+                                    fseek(groupe, -56L, 1);
+
+
+                                    fflush(stdin);
+                                    printf("entrer nouveau ADRESSE: \n");
+                                    fgets(adresse2, 22, stdin);
+                                    fflush(stdin);
+                                    len = strlen(adresse2) - 1;
+                                    adresse2[len] = '\0';
+
+                                    strcpy(adresse, adresse2);
+                                    fprintf(groupe, "\n");
+
+                                    fprintf(groupe, "%-20s\n", adresse);
+
+                                    fclose(groupe);
+
+                                    break;
+
+                                case 6:
+                                    fseek(groupe, -34L, 1);
+
+
+                                    fflush(stdin);
+                                    printf("entrer nouveau TEL: \n");
+                                    fgets(tel2, 12, stdin);
+                                    fflush(stdin);
+                                    len = strlen(tel2) - 1;
+                                    tel2[len] = '\0';
+
+                                    strcpy(tel, tel2);
+                                    fprintf(groupe, "\n");
+
+                                    fprintf(groupe, "%-10s\n", tel);
+
+                                    fclose(groupe);
+
+                                    break;
+
+                                case 7:
+                                    fseek(groupe, -22L, 1); // quand on ecrire dans un fichier il ecrit aussi \0 . (\0 & \n didn't display)
+                                    fprintf(groupe, "\n");
+
+
+                                    fflush(stdin);
+                                    printf("entrer nouveau TYPE BAC: \n");
+                                    fgets(typebac2, 22, stdin);
+                                    fflush(stdin);
+                                    len = strlen(typebac2) - 1;
+                                    typebac2[len] = '\0';
+
+                                    strcpy(typebac, typebac2);
+
+
+                                    fprintf(groupe, "%-20s", typebac);
+
+                                    fclose(groupe);
+
+                                    break;
+                                default: puts("ERREUR de choix !!");
+
+                            }
+
+                            break; // case 5 modifier stagiaire
+
+
+                        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+                        case 6: // change le nom de groupe
+
+                            fclose(groupe);
+                            puts("entrer un nouveau nom: ");
+                            gets(nom_groupe2);
+                            result = rename(nom_groupe, nom_groupe2);
+                            if (result == 0) puts("le groupe a ete renomer");
+                            else puts("le groupe n'a pas ete renomer");
+
+                            break;
+                        case 7:
+                        fclose(groupe);
+                        do{
+
+                        printf("voulez vous vraiment supprimer le groupe ?\n\n1-Oui\t2-Non\n\n");
+                        scanf("%d",&choix);
+
+                        if(choix == 1){
+                        result=remove(nom_groupe);
+                            if(result==0)   puts("le groupe a ate supprimer avec succse");
+                        }
+                        else if(choix == 2){
+
+                            puts("\n\n Le groupe n'a pas ete supprimer\n\n");
+                        }
+
+                        else {
+
+                            printf("veuillez entrer un choix existe\n\n");
+                            fflush(stdin);
+                        }
+                        }while( choix != 1 && choix != 2);
+
+                            break;
+
+                        case 8:
+                            fclose(groupe); goto debut;
+                            break;
+                        case 9: goto name; 
+
+                        case 10: goto fin;
+                        case 11 : 
+                             fseek(groupe_matiere,0,2);
+                             if(ftell(groupe_matiere)==0){
+                             strcat(ligne_matiere,nom_groupe);
+                             strcat(ligne_matiere,";");
+                             do {
+                             printf("entrer une matiere \n");
+                             fflush(stdin);
+                             gets(matiere);
+                             strcat(ligne_matiere,matiere);
+                             strcat(ligne_matiere,";");
+                             
+                             puts("encore une autre  matiere o/n O/N ");
+                             scanf("%c", &reponse);
+                             
+                             }while((reponse == 'o' || reponse == 'O') && (reponse != 'n' && reponse != 'N'));
+                             puts(ligne_matiere);
+                             fputs(ligne_matiere,groupe_matiere);
+                             
+                             }else printf("les matiere existe");
+                             break;
+                        
+                    }//fin de switch Menu
+                        
+                } // fin de case 1 . creer groupe
+                break;
+            case 2: // si l'utilisateur veux ouvrir ( lire le contenu ) d'un groupe.
+
+                printf("entrer le nom de groupe: \n\n"); // entrer le nom du groupe
+                fflush(stdin);
+               
+                gets(nom_groupe);
+
+                if (groupe = fopen(nom_groupe, "r"))
+                {
+                    existe = 1;
+                    fclose(groupe);                     /* on test si le groupe existe ou non avec une var bool*/
+
+                }
+                else existe = 0;                        /*////////////////////////////////////////////////////////*/
+
+                if (existe)
+                {
+                    groupe = fopen(nom_groupe, "r+");
+                    puts("\nle fichier  groupe est ouvert\n");
+                    printf("\n");
+                    fflush(stdin);
+                    new= 0;
+                    goto suivi;       /*afficher le MENU en case 1*/
+                }
+                else
+                {
+                    puts("\nle groupe n'existe pas, veuillez entrer un groupe existant\n");
+                    goto debut;
+                }
+
+                break;
+
+            case 3: goto fin;
+
+
+            default:
+                printf("\n     --ERREUR de choix--\n\n ");
+                goto debut;
+        }
+
+
+
+
+    } while ((choix != 1) && (choix != 2));
+
+
+
+
+    fin:
+    getch();
+    return 0;
+}//___________________________________________________________________________________________________________________________
+
+void MENU(void)
+{
+    puts("taper :");
+    putchar('\n');
+    printf("      1-  Afficher stagiaire\n\n");
+    printf("      2-  Ajouter stagiaire\n\n");
+    printf("      3-  Chercher stagiaire\n\n");
+    printf("      4-  Supprimer stagiaire\n\n");
+    printf("      5-  Modifier stagiaire\n\n");
+    printf("      6-  Changer le nom du groupe\n\n");
+    printf("      7-  Supprimer le groupe\n\n");
+    printf("      8-  Fermer le groupe\n\n");
+    printf("      9-  Ouvrir un autre groupe\n\n");
+    printf("      10- Fermer le programme\n\n");
+    printf("      11- Ajouter matiere");
+
+
+
+}
+
+
+void afficher_info()
+{
+
+    system("COLOR 97");
+    printf("\n  CIN:   %s\n  NOM:   %s\n  PRENOM:   %s\n  AGE:   %s\n  ADRESSE:   %s\n  TEL:   %s\n  TYPE DE BAC:   %s\n", cin, nom, prenom, age, adresse, tel, typebac);
+
+
+}
+
+void affichier_stg(void)
+{
+
+    while (!feof(groupe))
+    {
+
+        /* fgets(cin,12,groupe);
+         fgets(nom,21,groupe);
+         fgets(prenom,21,groupe);
+         fgets(age,21,groupe);
+         fgets(adresse,21,groupe);
+         fgets(tel,11,groupe);
+         fgets(typebac,22,groupe);*/
+        //fscanf(groupe,"%10s%20s%20s%2s%20s%10s%20s",cin,nom,prenom,age,adresse,tel,typebac);
+        pomper_stg( cin, nom, prenom, age, adresse, tel, typebac);
+        afficher_info();
+
+    }// end loop
+}
+void pomper_stg(char* CIN,char* NOM,char* PRENOM,char* AGE,char* ADRESSE,char* TEL,char* TYPEBAC)
+{
+
+    /*        fflush(stdin);
+     fgets(cin,12,groupe);
+      fgets(nom,22,groupe);
+      fgets(prenom,22,groupe);
+      fgets(age,4,groupe);
+      fgets(adresse,22,groupe);
+      fgets(tel,12,groupe);
+      fgets(typebac,22,groupe);
+   /*
+   fscanf(groupe,"%10s%20s%20s%2s%20s%10s%20s",cin,nom,prenom,age,adresse,tel,typebac);
+   */
+
+
+    fflush(stdin);
+    fgets(CIN, 12, groupe);
+    fflush(stdin);
+
+    len = strlen(CIN) - 1;
+    CIN[len] = '\0';
+
+
+    fgets(NOM, 22, groupe);
+    fflush(stdin);
+    len = strlen(NOM) - 1;
+    NOM[len] = '\0';
+
+
+
+
+    fgets(PRENOM, 22, groupe);
+    fflush(stdin);
+    len = strlen(PRENOM) - 1;
+    PRENOM[len] = '\0';
+
+
+
+    fgets(AGE, 4, groupe);
+    fflush(stdin);
+    len = strlen(AGE) - 1;
+    AGE[len] = '\0';
+
+
+
+    fflush(stdin);
+
+    fgets(ADRESSE, 22, groupe);
+    fflush(stdin);
+    len = strlen(ADRESSE) - 1;
+    ADRESSE[len] = '\0';
+
+
+    fgets(TEL, 12, groupe);
+    fflush(stdin);
+    len = strlen(TEL) - 1;
+    TEL[len] = '\0';
+
+
+
+
+
+    fgets(TYPEBAC, 22, groupe);
+    fflush(stdin);
+    len = strlen(TYPEBAC);
+    TYPEBAC[len] = '\0';
+
+
+}
+int type_recherche(void)
+{
+
+    int choix;
+    existe = 0;
+    puts("tapez:");
+    puts("			1-chercher par Nom et Prenom");
+    puts("			2-chercher par CIN");
+    puts("			3-chercher par Tel\n");
+    scanf("%d", &choix);
+    fflush(stdin);
+    switch (choix)
+    {
+
+
+
+        case 1:
+
+            printf("        entrer le nom\n");
+            fflush(stdin);
+            scanf("%20[0-9a-zA-Z ]", nomtmp); // saisie le nom . on peut scaner les espaces
+            sprintf(nom2, "%-20s", nomtmp); // copier le contenu de nomtmp . en ajoutant des espaces si necessaire . pour completer 20 car pa rce que on va comparer 20 car de nom avec 20 car de nom2
+
+
+
+            printf("        entrer le prenom\n");
+            fflush(stdin);
+            scanf("%20[0-9a-zA-Z ]", prenomtmp);
+            sprintf(prenom2, "%-20s", prenomtmp);
+
+            //  printf("%s:%d%s:%d\n\n\n",nom2,strlen(nom2),prenom2,strlen(prenom2)); // afficher le nom2 et prenom 2 et leur longueurs
+
+
+            fflush(stdin);
+
+
+            fseek(groupe, 0L, 0);
+            do
+            {// boucle do while . hconditioner par la fin de fichier et l'existe de cin
+                pomper_stg( cin, nom, prenom, age, adresse, tel, typebac);// pomper les element de fichier dans les variable a la ram
+
+                existe = chercher_stg(nom2, prenom2, nom, prenom, 2); // utiliser la method 2 comparer les nom et les prenom (2)
+                //printf("%s:%d:\n%s:%d:\n",nom,strlen(nom),nom2,strlen(nom2));
+
+                //printf("%s:%d:\n%s:%d:",prenom,strlen(prenom),prenom2,strlen(prenom2));
+            } while ((!existe) && (!feof(groupe)));
+
+            break;
+        case 2:
+            printf(" entrer la cin ");
+            gets(cin2);
+            do
+            {
+                fflush(stdin);
+
+                 pomper_stg( cin, nom, prenom, age, adresse, tel, typebac);
+                chercher_stg(cin2, prenom2, cin, prenom, 1); //comparer just les cin c'est pour cela on utilise 1 
+
+            } while ((!existe) && (!feof(groupe)));
+            break;
+        case 3:
+            printf("  entrer le TEL ");
+
+            scanf("%10[0-9a-zA-Z ]", teltmp);
+
+            sprintf(tel2, "%-10s", teltmp);
+
+            //printf("%d",strlen(tel2));
+            do
+            {// boucle do while . dconditioner par la fin de fichier et l'existe de cin
+
+                 pomper_stg( cin, nom, prenom, age, adresse, tel, typebac);// pomper les element de fichier dans les variable a la ram
+
+                existe = chercher_stg(tel2, prenom2, tel, prenom, 1);
+
+            } while ((!existe) && (!feof(groupe)));
+
+
+
+            break;
+    }
+    return existe;
+}
+//------------------------------------------------------------------------
+int chercher_stg(char* str1, char* str2, char* str3, char* str4, int nbr)
+{
+
+    int len, nbre;
+    nbre = nbr;
+
+    switch (nbre)
+    {
+
+        case 1:
+            //cin2 saut la ligne donc il faut comparer n caractere
+
+            len = strlen(str1) - 1; // la longueur de chaine
+
+            cmp = (strncmp(str1, str3, len));
+
+            if (cmp == 0) existe = 1;
+
+            break;
+
+
+        case 2:
+
+
+
+
+            cmp1 = (strcmp(str1, str3));
+            cmp2 = (strcmp(str2, str4));
+
+            if ((cmp1 == 0) && (cmp2 == 0)) { existe = 1; }
+            break;
+    }
+
+
+    return existe;
+
+}
+
+void MENU_modifier()
+{
+
+    printf("qu'est ce que vous voulez modifier ?\n\n");
+    puts("1-CIN");
+    fflush(stdin);
+    puts("2-NOM");
+    fflush(stdin);
+    puts("3-PRENOM");
+    fflush(stdin);
+    puts("4-AGE");
+    fflush(stdin);
+    puts("5-ADRESSE");
+    fflush(stdin);
+    puts("6-TEL");
+    fflush(stdin);
+    puts("7-TYPEBAC");
+    fflush(stdin);
+
+
+}
+int supprimer_stg()
+{
+
+    do
+    {
+         pomper_stg( cin, nom, prenom, age, adresse, tel, typebac);
+        if (strcmp(cin, cintmp) != 0)
+        {
+            if (feof(groupe)) fprintf(groupe_tmp, "%-10s\n%-20s\n%-20s\n%-2s\n%-20s\n%-10s\n%20s", cin, nom, prenom, age, adresse, tel, typebac);
+            else if (!feof(groupe)) fprintf(groupe_tmp, "%-10s\n%-20s\n%-20s\n%-2s\n%-20s\n%-10s\n%20s\n", cin, nom, prenom, age, adresse, tel, typebac);
+ //Si le pointeur n'est pas dans EOF on va sauter la ligne
+        }
+
+
+    } while (!feof(groupe));
+
+
+
+}
+int chercher_global(){
+    //le fichier general deja ouvrir
+   // do{
+    //ouvrir le premier fichier (groupe) qui existe dans le fichier general
+    //do {
+    // pomper les donner on va donner a la fonction pomper argument cin 2 nom2 tel2 etc ...
+    // utiliser la fonction chercher_stg .pour comparer les eleent pomper avec les element entrer par l'utilisateur
+
+   // while(// non fin de fichier groupe && existe=0);
+//}while(//non fin de fichier general && existe=0);
+
+
+  //  return existe; // on va utiliser cette fonction en ligne 633 si existe=1 en va
+    //demander a l'utilisateur d'entrer un autre stagiaire par ce que le stagiaire est deja existe
+
+
+    }
+void ajouter_stg(char nom_groupe[20])
+{
+int cmp1,cmp2;
+
+    fclose(groupe);
+    groupe = fopen(nom_groupe, "a+"); // si le fichier n'existe pas . le compilateur va le cree
+
+    printf("entrer CIN (carte d'identite naionale)\n");
+
+
+
+    fgets(cin, 12, stdin);// si en ecrit just 12 .et en saisie 10 car. il va ecrit dans le fichier just 9 car et 1 espace  et \n.
+    fflush(stdin);  // par ce que \0 n'a pas de place . \0 va prendre la place de \n.
+                    //toujour le systeme ajout un \0 a la fin de chaine .si on laise pas de
+                    //place .\0 va prendre la place de dernier car (ette exemple just .pour fgets . parceque fgets ajout un \n a lafin de chaine .aussi )
+                    //si on peut saisie dans le fichier 10 car on va ecrit dans fgets 12 . pour \n et \0 , on va declarer 11 case dans le tableau
+                    // pour notre exemple on a changer \n par \0 dans le remplissage
+
+
+
+    len = strlen(cin) - 1; // le (size) de  cin est 11 don le contenue de 11 iem case est \n donc on va converter \n a \0 .la longuer stocker et 10
+    cin[len] = '\0';
+
+    printf("entrer Le Nom \n");
+    fgets(nom, 22, stdin);
+    fflush(stdin);
+    len = strlen(nom) - 1;// on a sauter la ligne dans fprintf . non dans fgets . pour contoler la saute de ligne
+    nom[len] = '\0';
+
+
+
+    printf("entrer Le Prenom\n");
+    fgets(prenom, 22, stdin);
+    fflush(stdin);
+    len = strlen(prenom) - 1;
+    prenom[len] = '\0';
+
+
+
+    printf("entrer L'age\n");
+    fgets(age, 4, stdin);
+    fflush(stdin);
+    len = strlen(age) - 1;
+    age[len] = '\0';
+
+
+
+    fflush(stdin);
+    printf("entrer L'adresse\n");
+    fgets(adresse, 22, stdin);
+    fflush(stdin);
+    len = strlen(adresse) - 1;
+    adresse[len] = '\0';
+
+    printf("entrer le Tel\n");
+    fgets(tel, 12, stdin);
+    fflush(stdin);
+    len = strlen(tel) - 1;
+    tel[len] = '\0';
+
+
+
+    printf("entrer Le Type de Bac\n");
+
+    fgets(typebac, 22, stdin);
+    fflush(stdin);
+    len = strlen(typebac) - 1;
+    typebac[len] = '\0';
+
+
+
+    
+
+    //if(groupe!=NULL)fprintf(groupe,"\n");
+
+    /*fflush(stdin);
+    fputs(cin,groupe);
+    fputs(nom,groupe);
+    fputs(prenom,groupe);           //remplir le fichier
+    fputs(age,groupe);
+    fputs(adresse,groupe);
+    fputs(tel,groupe);
+
+    fputs(typebac,groupe);*/
+ fseek(groupe, 0L, 0);
+ existe=0;
+            do
+            {// boucle do while . conditioner par la fin de fichier et l'existe de cin
+                pomper_stg( cin2, nom2, prenom2, age2, adresse2, tel2, typebac2);// pomper les element de fichier dans les variable a la ram
+
+                 cmp1 = strncmp(cin2,cin,strlen(cin));
+                 cmp2 = strncmp(tel2,tel,strlen(tel));
+
+            if ((cmp1 == 0) && (cmp2 == 0)) { existe = 1; }
+            
+                
+                
+                
+               
+                
+                //printf("%s:%d:\n%s:%d:\n",nom,strlen(nom),nom2,strlen(nom2));
+
+                //printf("%s:%d:\n%s:%d:",prenom,strlen(prenom),prenom2,strlen(prenom2));
+            } while ((!existe) && (!feof(groupe)));
+
+if (existe==0){
+    if (new) //si le fichier est nouveau  . ca ve dire le fichier est creer dans cette execution . //new . est initialiser a chaque creation de fichier ou a ouvrir  
+    {
+          puts("encore un autre stagiaire o/n O/N ");
+    scanf("%c", &reponse);
+        if ((reponse == 'o' || reponse == 'O') && (reponse != 'n' && reponse != 'N'))
+
+
+
+            fprintf(groupe, "%-10s\n%-20s\n%-20s\n%-2s\n%-20s\n%-10s\n%20s\n", cin, nom, prenom, age, adresse, tel, typebac);
+
+        else fprintf(groupe, "%-10s\n%-20s\n%-20s\n%-2s\n%-20s\n%-10s\n%20s", cin, nom, prenom, age, adresse, tel, typebac);
+
+    }
+
+    if (!new)
+    {
+        if ((reponse == 'o' || reponse == 'O') && (reponse != 'n' && reponse != 'N'))
+
+
+
+            fprintf(groupe, "%\n-10s\n%-20s\n%-20s\n%-2s\n%-20s\n%-10s\n%20s\n", cin, nom, prenom, age, adresse, tel, typebac);
+
+        else fprintf(groupe, "\n%-10s\n%-20s\n%-20s\n%-2s\n%-20s\n%-10s\n%20s", cin, nom, prenom, age, adresse, tel, typebac);
+
+
+
+
+    }
+} // existe=0
+else printf("\n\n\n\n\n          le stagiaire est deja inscrit !!! entrer un stagiaire valide !! \n\n\n\n");
+
+
+    //%11s%21s%21s%3s%21s%11s%20s
+}
